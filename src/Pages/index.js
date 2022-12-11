@@ -1,3 +1,9 @@
+const map = L.map("map").setView([0, 0], 1);
+const attribution =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+const tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+
 import {
   city,
   Temp,
@@ -19,7 +25,9 @@ let weather = {
         this.apiKey
     )
       .then((response) => response.json())
-      .then((data) => this.displayWeather(data));
+      .then((data) => {
+        this.displayWeather(data);
+      });
   },
 
   displayWeather: function (data) {
@@ -27,6 +35,7 @@ let weather = {
     const { icon, description } = data.weather[0];
     const { temp, humidity } = data.main;
     const { speed } = data.wind;
+    const { lon, lat } = data.coord;
 
     city.innerText = "Weather in " + name;
     Icon.src = "https://openweathermap.org/img/wn/" + icon + ".png";
@@ -35,11 +44,13 @@ let weather = {
     Humidity.innerText = "Humidity: " + humidity + "%";
     windSpeed.innerText = "Wind Speed: " + speed + "Kmph";
     document.body.style.backgroundImage =
-      "url('https://source.unsplash.com/1600x900/?" + name + "')";
+      "url('https://source.unsplash.com/1600x900/?" + description + "')";
+
+    L.marker([lat, lon]).addTo(map);
   },
 
   search: function () {
-    this.fetchWeather(document.querySelector(".search-bar").value);
+    this.fetchWeather(searchBar.value);
   },
 };
 
@@ -54,3 +65,7 @@ searchBar.addEventListener("keyup", function (event) {
 });
 
 weather.fetchWeather("Delhi");
+
+const tiles = L.tileLayer(tileUrl, { attribution });
+
+tiles.addTo(map);
