@@ -10,7 +10,7 @@ import {
 } from "./Dom-module/domPage.js";
 
 let weather = {
-  apiKey: "a6830eb4fc6bc1e54c02233909a6fe50",
+  apiKey: "Add Api Key Here",
   fetchWeather: function (city) {
     fetch(
       "https://api.openweathermap.org/data/2.5/weather?q=" +
