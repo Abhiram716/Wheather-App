@@ -59,3 +59,4 @@ weather.fetchWeather("Delhi");
 const tiles = L.tileLayer(tileUrl, { attribution });
 
 tiles.addTo(map);
+
