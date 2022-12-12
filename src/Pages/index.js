@@ -1,5 +1,5 @@
 import {
-  city,
+  City,
   Temp,
   Description,
   Humidity,
@@ -9,17 +9,15 @@ import {
   searchButton,
 } from "./Dom-module/domPage.js";
 
-let weather = {
-  apiKey: "Add Api Key Here",
+const weather = {
+  apiKey: "a6830eb4fc6bc1e54c02233909a6fe50",
   fetchWeather: function (city) {
     fetch(
-      "https://api.openweathermap.org/data/2.5/weather?q=" +
-        city +
-        "&units=metric&appid=" +
-        this.apiKey
-    )
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${this.apiKey}`)
       .then((response) => response.json())
-      .then((data) => this.displayWeather(data));
+      .then((data) => {
+        this.displayWeather(data);
+      });
   },
 
   displayWeather: function (data) {
@@ -27,19 +25,22 @@ let weather = {
     const { icon, description } = data.weather[0];
     const { temp, humidity } = data.main;
     const { speed } = data.wind;
+    const { lon, lat } = data.coord;
 
-    city.innerText = "Weather in " + name;
-    Icon.src = "https://openweathermap.org/img/wn/" + icon + ".png";
-    Temp.innerText = temp + "°C";
+    City.innerText = "Weather in " + name;
+    Icon.src = `https://openweathermap.org/img/wn/${icon}.png`;
+    Temp.innerText = `${temp}°C`;
     Description.innerText = description;
-    Humidity.innerText = "Humidity: " + humidity + "%";
-    windSpeed.innerText = "Wind Speed: " + speed + "Kmph";
+    Humidity.innerText = `Humidity: ${humidity}"%`;
+    windSpeed.innerText = `Wind Speed: ${speed}Kmph`;
     document.body.style.backgroundImage =
-      "url('https://source.unsplash.com/1600x900/?" + name + "')";
+      `url('https://source.unsplash.com/1600x900/?"${name}"')`;
+
+    L.marker([lat, lon]).addTo(map);
   },
 
   search: function () {
-    this.fetchWeather(document.querySelector(".search-bar").value);
+    this.fetchWeather(searchBar.value);
   },
 };
 
@@ -54,3 +55,7 @@ searchBar.addEventListener("keyup", function (event) {
 });
 
 weather.fetchWeather("Delhi");
+
+const tiles = L.tileLayer(tileUrl, { attribution });
+
+tiles.addTo(map);
